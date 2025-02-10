@@ -2,6 +2,7 @@ package valik.chat.bot;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.longpolling.util.LongPollingSingleThreadUpdateConsumer;
@@ -51,7 +52,9 @@ public class ValikChatBot implements LongPollingSingleThreadUpdateConsumer {
         //TODO for now just send a response with user input
 
         log.trace("Received update: {}", update);
-        if (update.getMessage().hasText() && update.getMessage().getText().equalsIgnoreCase("ебани цитату валик брат")) {
+
+        if (update.getMessage().hasText() && StringUtils.containsIgnoreCase(update.getMessage().getText(), "ебани")
+            && (StringUtils.containsIgnoreCase(update.getMessage().getText(), "цитату") || StringUtils.containsIgnoreCase(update.getMessage().getText(), "цитатку"))) {
             sendMessages();
         }
     }
