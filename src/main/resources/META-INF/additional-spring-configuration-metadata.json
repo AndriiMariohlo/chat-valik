@@ -1,0 +1,18 @@
+{
+  "properties": [
+    {
+      "name": "telegram.register-bot",
+      "type": "java.lang.Boolean",
+      "description": "Flag to determine whether to turn on telegram bot."
+    },
+    {
+      "name": "telegram.token",
+      "type": "java.lang.String",
+      "description": "Valid telegram bot token from @BotFather."
+    },
+    {
+      "name": "telegram.username",
+      "type": "java.lang.String",
+      "description": "Valid telegram bot username from @BotFather."
+    }
+  ] }
