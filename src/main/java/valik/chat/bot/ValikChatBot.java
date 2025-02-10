@@ -44,6 +44,7 @@ public class ValikChatBot implements LongPollingSingleThreadUpdateConsumer {
 
     @Override
     public void consume(Update update) {
+        log.debug("Received update: {}", update);
         //TODO for now just send a response with user input
         SendMessage response = SendMessage.builder().text(update.getMessage().getText()).chatId(update.getMessage().getChatId()).build();
         sendResponse(List.of(response));

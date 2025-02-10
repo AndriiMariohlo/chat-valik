@@ -6,3 +6,7 @@ telegram:
   register-bot: true
   token: ${TELEGRAM_BOT_TOKEN}
   username: ${TELEGRAM_BOT_USERNAME}
+
+logging:
+  level:
+    valik: debug
