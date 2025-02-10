@@ -18,6 +18,8 @@ import valik.chat.service.CitationParserService;
 import java.io.Serializable;
 import java.util.List;
 
+import static org.apache.commons.lang3.StringUtils.*;
+
 @RequiredArgsConstructor
 @Slf4j
 @Component
@@ -58,10 +60,16 @@ public class ValikChatBot implements LongPollingSingleThreadUpdateConsumer {
             justSent = false;
         }
 
-        if (update.getMessage().hasText() && StringUtils.containsIgnoreCase(update.getMessage().getText(), "ебани")
-            && (StringUtils.containsIgnoreCase(update.getMessage().getText(), "цитату") || StringUtils.containsIgnoreCase(update.getMessage().getText(), "цитатку"))) {
+        if (update.getMessage().hasText()
+            && contains(update, "ебани", "ебанешь", "ебануть", "выкати", "выкатишь", "выкатить", "захуярь", "захуяришь", "захуярить", "выдави", "выдавишь", "выдавить")
+            && contains(update, "цитату", "цитатку", "цитаточку")
+        ) {
             sendMessages();
         }
+    }
+
+    private static boolean contains(Update update, String... str) {
+        return containsAnyIgnoreCase(update.getMessage().getText(), str);
     }
 
     public void sendMessages() {
