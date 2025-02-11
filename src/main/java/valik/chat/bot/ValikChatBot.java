@@ -2,7 +2,7 @@ package valik.chat.bot;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.RandomUtils;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.longpolling.util.LongPollingSingleThreadUpdateConsumer;
 import org.telegram.telegrambots.meta.api.methods.botapimethods.BotApiMethod;
@@ -51,12 +51,14 @@ public class ValikChatBot implements LongPollingSingleThreadUpdateConsumer {
 
     @Override
     public void consume(Update update) {
-        //TODO for now just send a response with user input
+        int i = RandomUtils.secure().randomInt(0, 7);
+        if (i == 6) {
+            sendLikeEmoji(update);
+        }
 
         log.trace("Received update: {}", update);
         if (justSent) {
-            SetMessageReaction emoji = SetMessageReaction.builder().chatId(update.getMessage().getChatId()).messageId(update.getMessage().getMessageId()).reactionTypes(List.of(new ReactionTypeEmoji("emoji", "\uD83D\uDC4D"))).build();
-            sendResponse(List.of(emoji));
+            sendLikeEmoji(update);
             justSent = false;
         }
 
@@ -66,6 +68,11 @@ public class ValikChatBot implements LongPollingSingleThreadUpdateConsumer {
         ) {
             sendMessages();
         }
+    }
+
+    private void sendLikeEmoji(Update update) {
+        SetMessageReaction emoji = SetMessageReaction.builder().chatId(update.getMessage().getChatId()).messageId(update.getMessage().getMessageId()).reactionTypes(List.of(new ReactionTypeEmoji("emoji", "\uD83D\uDC4D"))).build();
+        sendResponse(List.of(emoji));
     }
 
     private static boolean contains(Update update, String... str) {
