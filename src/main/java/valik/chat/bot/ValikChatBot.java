@@ -78,7 +78,7 @@ public class ValikChatBot implements LongPollingSingleThreadUpdateConsumer {
     }
 
     private void checkSosal(Update update) {
-        if (update.getMessage() != null) {
+        if (update.hasMessage() && update.getMessage().hasText()) {
             checkSosalReply(update);
             checkSosalNext(update);
         }
