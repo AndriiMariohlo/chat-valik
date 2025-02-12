@@ -69,7 +69,7 @@ public class ValikChatBot implements LongPollingSingleThreadUpdateConsumer {
             justSent = false;
         }
 
-        if (update.getMessage().hasText()
+        if (update.hasMessage() && update.getMessage().hasText()
             && contains(update, "ебани", "ебанешь", "ебануть", "выкати", "выкатишь", "выкатить", "захуярь", "захуяришь", "захуярить", "выдави", "выдавишь", "выдавить", "скажи", "пиздани")
             && contains(update, "цитату", "цитатку", "цитаточку")
         ) {
