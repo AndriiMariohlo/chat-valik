@@ -16,6 +16,7 @@ import org.telegram.telegrambots.meta.api.objects.reactions.ReactionTypeEmoji;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
 import valik.chat.service.CitationParserService;
+import valik.chat.service.OpenAiService;
 
 import java.io.Serializable;
 import java.util.List;
@@ -29,6 +30,7 @@ public class ValikChatBot implements LongPollingSingleThreadUpdateConsumer {
 
     private final TelegramClient telegramClient;
     private final CitationParserService citationParserService;
+    private final OpenAiService openAiService;
     private boolean justSent;
     private Integer justSentMessageId;
 
@@ -69,12 +71,41 @@ public class ValikChatBot implements LongPollingSingleThreadUpdateConsumer {
             justSent = false;
         }
 
-        if (update.hasMessage() && update.getMessage().hasText()
-            && contains(update, "ебани", "ебанешь", "ебануть", "выкати", "выкатишь", "выкатить", "захуярь", "захуяришь", "захуярить", "выдави", "выдавишь", "выдавить", "скажи", "пиздани")
-            && contains(update, "цитату", "цитатку", "цитаточку")
-        ) {
-            sendMessages(update.getMessage().getChatId());
+        if (update.hasMessage() && update.getMessage().hasText()) {
+            String userMessage = update.getMessage().getText();
+            Long chatId = update.getMessage().getChatId();
+
+            if (contains(update,
+                    "ебани",
+                    "ебанешь",
+                    "ебануть",
+                    "выкати",
+                    "выкатишь",
+                    "выкатить",
+                    "захуярь",
+                    "захуяришь",
+                    "захуярить",
+                    "выдави",
+                    "выдавишь",
+                    "выдавить",
+                    "скажи",
+                    "пиздани")
+                    && contains(update, "цитату", "цитатку", "цитаточку")) {
+                sendMessages(chatId);
+                return;
+            }
+
+
+            if (userMessage.toLowerCase().contains("бот") || userMessage.endsWith("?")) {
+                sendOpenAiResponse(chatId, userMessage);
+            }
         }
+    }
+
+    private void sendOpenAiResponse(Long chatId, String userMessage) {
+        log.info("Отправка запроса в OpenAi: {}", userMessage);
+        String aiResponse = openAiService.getResponse(userMessage);
+        sendMessage(chatId, aiResponse);
     }
 
     private void checkSosal(Update update) {
@@ -123,7 +154,11 @@ public class ValikChatBot implements LongPollingSingleThreadUpdateConsumer {
     }
 
     private void sendLikeEmoji(Update update) {
-        SetMessageReaction emoji = SetMessageReaction.builder().chatId(update.getMessage().getChatId()).messageId(update.getMessage().getMessageId()).reactionTypes(List.of(new ReactionTypeEmoji("emoji", "\uD83D\uDC4D"))).build();
+        SetMessageReaction emoji = SetMessageReaction.builder()
+                .chatId(update.getMessage().getChatId())
+                .messageId(update.getMessage().getMessageId())
+                .reactionTypes(List.of(new ReactionTypeEmoji("emoji", "\uD83D\uDC4D")))
+                .build();
         sendResponse(List.of(emoji));
     }
 
@@ -132,11 +167,21 @@ public class ValikChatBot implements LongPollingSingleThreadUpdateConsumer {
     }
 
     public void sendMessages(Long chatId) {
-        SendMessage response = SendMessage.builder().text(citationParserService.getRandomCitation()).chatId(chatId).build();
+        SendMessage response = SendMessage.builder()
+                .text(citationParserService.getRandomCitation())
+                .chatId(chatId)
+                .build();
         sendResponse(List.of(response));
         log.debug("Message sent: {}", response.getText());
         justSent = true;
     }
 
+    private void sendMessage(Long chatId, String text) {
+        SendMessage message = SendMessage.builder()
+                .chatId(chatId)
+                .text(text)
+                .build();
+        sendResponse(List.of(message));
+    }
 }
 
