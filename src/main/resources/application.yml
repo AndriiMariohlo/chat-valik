@@ -7,6 +7,10 @@ telegram:
   token: ${TELEGRAM_BOT_TOKEN}
   username: ${TELEGRAM_BOT_USERNAME}
 
+openai:
+  api-key: ${OPENAI_API_KEY}
+  assistant-id: ${OPENAI_ASSISTANT_ID}
+
 logging:
   level:
     valik: debug

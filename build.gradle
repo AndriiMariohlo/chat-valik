@@ -25,6 +25,9 @@ repositories {
 }
 
 dependencies {
+    //open ai
+    implementation("com.openai:openai-java:0.26.1") // Официальная библиотека OpenAI
+
     //telegram
     implementation 'org.telegram:telegrambots-meta:7.10.0'
     implementation 'org.telegram:telegrambots-longpolling:7.10.0'
@@ -39,6 +42,8 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     implementation 'org.apache.commons:commons-lang3:3.17.0'
+    implementation("org.springframework.boot:spring-boot-starter-webflux")
+    implementation("com.fasterxml.jackson.core:jackson-databind")
 }
 
 tasks.named('test') {
